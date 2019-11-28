@@ -57,9 +57,10 @@ int main(int argc, char const *argv[]) {
 		return ERROR_SYSTEM_CODE;
 	}
 
+	
 	listenSocket(serverSocket);
 
-	if(connectSocket(serverSocket, client) == SOCKET_ERROR) {
+	if(connectSocket(serverSocket, &client) == SOCKET_ERROR) {
 	    printf("Error al conectar con el host\n");
 	    close(serverSocket);
 	    return ERROR_SYSTEM_CODE;
@@ -112,7 +113,9 @@ int main(int argc, char const *argv[]) {
 	printf("FIN DEL SERVICIO\n");
 	//
 	//CIERRO EL SOCKET
-	close(serverSocket);
+
+	//
+	close(serverSocket); //afuera del while
 	return SUCESS_SYSTEM_CODE;
 }
 
