@@ -16,7 +16,7 @@
 #define SOCKET_ERROR -1
 #define ERROR_SYSTEM_CODE 1
 #define SUCESS_SYSTEM_CODE 0
-
+#define ASCII_BASE 32
 static int getPort();
 static int socketCreation();
 static void welcomeMessageCreation(int);
@@ -68,18 +68,20 @@ int main(int argc, char const *argv[]) {
 	}
 
 	//DATOS DEL CLIENTE//////////////////////////////////////////////////////////////
+	//showDataClient();
 	strcpy(ip, inet_ntoa(client.sin_addr));
 	printf("IP DEL CLIENTE: %s \n", ip);
 	clientPort = ntohs(client.sin_port);
 	printf("PUERTO DEL CLIENTE: %d \n\n", clientPort);
 
 	//LIMPIEZA DE BUFFERS
-	bzero(serverResponse, 256);
-	bzero(clientResponse, 100);
+	//bzero(serverResponse, 256); no lo pondria
+	//bzero(clientResponse, 100);
 
 	//ENVIO DE MENSAJE
 	strcpy(serverResponse, "BIENVENIDO AL SERVIDOR! POR FAVOR INTRODUZCA UNA CADENA DE NO MAS DE 100 CARACTERES\n");
 
+	//writeSocket()
 	if (write(clientSocket, serverResponse, strlen(serverResponse)) < 0) {
 		printf("FALLO AL ENVIAR EL MENSAJE\n\n");
 		return 1;
@@ -87,6 +89,7 @@ int main(int argc, char const *argv[]) {
 
 	printf("PETICION DE MENSAJE ENVIADA\n\n");
 
+	// readSocket
 	//ESPERANDO RESPUESTA DEL CLIENTE
 	if (read(clientSocket, &clientResponse, sizeof(clientResponse)) < 0) {
 		printf("ERROR AL RECIBIR \n");
@@ -94,9 +97,11 @@ int main(int argc, char const *argv[]) {
 	}
 	printf("CLIENTE: %s \n", clientResponse);
 
+
+	// sendMessagge()
 	//PREPARANDO MENSAJE DE RESPUESTA
 	toUpper(clientResponse);
-	bzero(serverResponse, 256);
+	//bzero(serverResponse, 256);
 	strcpy(serverResponse, clientResponse);
 
 	//ENVIO DE MENSAJE
@@ -105,7 +110,7 @@ int main(int argc, char const *argv[]) {
 	}
 	printf("MENSAJE MODIFICADO ENVIADO\n\n");
 	printf("FIN DEL SERVICIO\n");
-
+	//
 	//CIERRO EL SOCKET
 	close(serverSocket);
 	return SUCESS_SYSTEM_CODE;
@@ -150,11 +155,11 @@ static int connectSocket(int serverSocket, struct sockaddr_in * client) {
 	return connect(serverSocket,(struct sockaddr *)&client, sizeof(client));
 }
 
-void toUpper(char *s) {
-	int i;
-	for (i = 0; s[i] != '\0'; i++) {
+void toUpper(char * s) {
+  	//cambiar a toUpper
+	for (int i = 0; s[i] != '\0'; i++) {
 		if (s[i] >= 'a' && s[i] <= 'z') {
-			s[i] = s[i] - 32;
+			s[i] = s[i] - ASCII_BASE;
 		}
 	}
 }
